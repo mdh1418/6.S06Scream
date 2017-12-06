@@ -44,16 +44,16 @@ void setup(void){
   }
 
   SPIFFS.begin();
-  server.onNotFound([]() {
-    if (!handleFileRead(server.uri()))
-      server.send(404, "text/plain", "404: Not Found");
-  });
+//  server.onNotFound([]() {
+//    if (!handleFileRead(server.uri()))
+//      server.send(404, "text/plain", "404: Not Found");
+//  });
   
   // Display the home page
-//  server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/" 
+  server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/" 
 //  // When the user logs in successfully, go to /login
-//  server.on("/login", HTTP_POST, handleLogin); // Call the 'handleLogin' function when a POST request is made to URI "/login"
-//  server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
+  server.on("/login", HTTP_POST, handleLogin); // Call the 'handleLogin' function when a POST request is made to URI "/login"
+  server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
 
   server.begin();                            // Actually start the server
   Serial.println("HTTP server started");
@@ -92,9 +92,17 @@ bool handleFileRead(String path){  // send the right file to the client (if it e
 
 void handleRoot() {                          // When URI / is requested, send a web page with a button to toggle the LED
   server.send(200, "text/html", "<p>What is your name?</p><form action=\"/login\" method=\"POST\">Firstname: <input type=\"text\" name=\"firstname\" placeholder=\"John\"></br>Lastname: <input type=\"text\" name=\"lastname\" placeholder=\"Doe\"></br><input type=\"submit\" value=\"Submit\"></form>");
+  
+  File tempLog = SPIFFS.open("/temp.csv", "a"); // Write the time and the temperature to the csv file
+      tempLog.print(300);
+      tempLog.print(',');
+      tempLog.println(400);
+      tempLog.close();
+
+  File readLog = SPIFFS.open("/temp.csv", "r");
+      Serial.print(readLog.readStringUntil('\n'));
 //  server.send(200, "text/html", "<form action=\"/login\" method=\"POST\"><input type=\"text\" name=\"username\" placeholder=\"Username\"></br><input type=\"password\" name=\"password\" placeholder=\"Password\"></br><input type=\"submit\" value=\"Login\"></form><p>Try 'John Doe' and 'password123' ...</p>");
 }
-
 void handleLogin() {                         // If a POST request is made to URI /login
   if( ! server.hasArg("firstname") || ! server.hasArg("lastname")
       || server.arg("firstname") == NULL || server.arg("lastname") == NULL){

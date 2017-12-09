@@ -8,12 +8,11 @@
 #include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h>
 #include <FS.h>
-//#include <WebSocketServer.h> 
 
 ESP8266WiFiMulti wifiMulti;     // Create an instance of the ESP8266WiFiMulti class, called 'wifiMulti'
 
 ESP8266WebServer server(80);    // Create a webserver object that listens for HTTP request on port 80
-WebSocketsServer webSocket = WebSocketsServer(81); 
+WebSocketsServer webSocket = WebSocketsServer(81);
 
 String getContentType(String filename);
 bool handleFileRead(String path);
@@ -23,10 +22,10 @@ int maxScore;
 
 void handleRoot();              // function prototypes for HTTP handlers
 void handleLogin();
-void handleLeaderboard();
+//void handleLeaderboard();
 void handleHistory();
 void handleScream();
-void handleScreaming();
+//void handleScreaming();
 void handlePost();
 void handleLogout();
 void handleNotFound();
@@ -34,14 +33,13 @@ void handleNotFound();
 void setup(void) {
   user[0] = "";
   user[1] = "";
+  maxScore = 0;
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
   delay(10);
   Serial.println('\n');
 
-// ------- START WIFI ---------- // 
+  // ------- START WIFI ---------- //
   wifiMulti.addAP("MIT", "");   // add Wi-Fi networks you want to connect to
-  //  wifiMulti.addAP("ssid_from_AP_2", "your_password_for_AP_2");
-  //  wifiMulti.addAP("ssid_from_AP_3", "your_password_for_AP_3");
 
   Serial.println("Connecting ...");
   int i = 0;
@@ -62,7 +60,7 @@ void setup(void) {
   }
 
 
-// ---------- START SPIFF ----------- // 
+  // ---------- START SPIFF ----------- //
   SPIFFS.begin();
   //  server.onNotFound([]() {
   //    if (!handleFileRead(server.uri()))
@@ -70,44 +68,51 @@ void setup(void) {
   //  });
 
 
-// ---------START WEBSOCKET --------- // 
-  webSocket.begin(); 
-  webSocket.onEvent(webSocketEvent); 
-  Serial.println("WebSocket Server started."); 
+  // ---------START WEBSOCKET --------- //
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
+  Serial.println("WebSocket Server started.");
 
 
-  // ----------- START SERVER ----------- // 
+  // ----------- START SERVER ----------- //
   // Display the home page
   server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
   //  // When the user logs in successfully, go to /login
   server.on("/login", HTTP_POST, handleLogin); // Call the 'handleLogin' function when a POST request is made to URI "/login"
-  server.on("/leaderboard", HTTP_POST, handleLeaderboard);
+  //  server.on("/leaderboard", HTTP_POST, handleLeaderboard);
   server.on("/history", HTTP_POST, handleHistory);
   server.on("/scream", HTTP_POST, handleScream);
-  server.on("/screaming", HTTP_POST, handleScreaming);
+  //  server.on("/screaming", HTTP_POST, handleScreaming);
   server.on("/post", HTTP_POST, handlePost);
   server.on("/", HTTP_POST, handleLogout);
   server.onNotFound([]() {
     if (!handleFileRead(server.uri()))
       server.send(404, "text/plain", "404: Not Found");
   });
-//  server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
+  //  server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
 
   server.begin();                            // Actually start the server
   Serial.println("HTTP server started");
 }
 
 
-bool record = false; 
-bool stopRecord = true; 
-int loudness = 0; 
+bool record = false;
+bool stopRecord = true;
+int loudness = 0;
 
 void loop(void) {
-  webSocket.loop(); 
+  webSocket.loop();
   server.handleClient();                     // Listen for HTTP requests from clients
 
-  if(record){
-    Serial.println(loudness); 
+  if (record) {
+    maxScore = _max(maxScore, int(analogRead(A0)));
+//    int temp = analogRead(A0);
+//    if (maxScore < temp) {
+//      maxScore = temp;
+//    }
+        Serial.println(analogRead(A0));
+        Serial.println(maxScore);
+//        Serial.println(loudness);
   }
 
 }
@@ -123,6 +128,9 @@ String getContentType(String filename) { // convert the file extension to the MI
 
 bool handleFileRead(String path) { // send the right file to the client (if it exists)
   Serial.println("handleFileRead: " + path);
+  if (path == "/recording.html") {
+    maxScore = 0;
+  }
   if (path.endsWith("/")) path += "recording.html";          // If a folder is requested, send the index file
   String contentType = getContentType(path);             // Get the MIME type
   String pathWithGz = path + ".gz";
@@ -144,62 +152,70 @@ bool handleFileRead(String path) { // send the right file to the client (if it e
 void handleRoot() {                          // When URI / is requested, send the home page
   server.send(200, "text/html", "<p>Welcome to 6.S06Scream!!!</p><form action=\"/login\" method=\"POST\">Firstname: <input type=\"text\" name=\"firstname\" placeholder=\"John\"></br>Lastname: <input type=\"text\" name=\"lastname\" placeholder=\"Doe\"></br><input type=\"submit\" value=\"Login\"></form><form action=\"/leaderboard.html\" method=\"POST\"><input type=\"submit\" value=\"Leaderboard\"></form>");
 
-//  File readLog = SPIFFS.open("/temp.csv", "r");
-//  for (int i = 0; i < 10; i++){
-//    Serial.println(readLog.readStringUntil('\n'));
-//  }
+  //  File readLog = SPIFFS.open("/temp.csv", "r");
+  //  for (int i = 0; i < 10; i++){
+  //    Serial.println(readLog.readStringUntil('\n'));
+  //  }
 }
 
 void handleLogin() {                         // If a POST request is made to URI /login
-  if (user[0] != "" && user[1] != ""){
-    server.send(200, "text/html", "<p>Welcome, " + user[0] + " " + user[1] + "!</p><form action=\"/history\" method=\"POST\"><input type=\"submit\" value=\"My Scores\"></form><form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Scream\"></form><form action=\"/leaderboard\" method=\"GET\"><input type=\"submit\" value=\"Leaderboard\"></form><form action=\"/\" method=\"POST\"><input type=\"submit\" value=\"Logout\"></form>");
+  if (user[0] != "" && user[1] != "") {
+    server.send(200, "text/html", "<p>Welcome, " + user[0] + " " + user[1] + "!</p><form action=\"/history\" method=\"POST\"><input type=\"submit\" value=\"My Scores\"></form><form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Scream\"></form><form action=\"/leaderboard.html\" method=\"GET\"><input type=\"submit\" value=\"Leaderboard\"></form><form action=\"/\" method=\"POST\"><input type=\"submit\" value=\"Logout\"></form>");
   }
   else if ( ! server.hasArg("firstname") || ! server.hasArg("lastname")
-       || server.arg("firstname") == NULL || server.arg("lastname") == NULL) {
+            || server.arg("firstname") == NULL || server.arg("lastname") == NULL) {
     server.send(400, "text/plain", "400: Invalid Request, please enter your name");
     return;
   }
   else {
     user[0] = server.arg("firstname");
     user[1] = server.arg("lastname");
-//    SPIFFS.remove("/temp.csv");
-//    File tempLog = SPIFFS.open("/temp.csv", "a");
-//    tempLog.print(server.arg("firstname") + " " + server.arg("lastname") + ".\n");
-//    tempLog.close();
+    //    SPIFFS.remove("/temp.csv");
+    //    File tempLog = SPIFFS.open("/temp.csv", "a");
+    //    tempLog.print(server.arg("firstname") + " " + server.arg("lastname") + ".\n");
+    //    tempLog.close();
 
-    server.send(200, "text/html", "<p>Welcome, " + user[0] + " " + user[1] + "!</p><form action=\"/history\" method=\"POST\"><input type=\"submit\" value=\"My Scores\"></form><form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Scream\"></form><form action=\"/leaderboard\" method=\"GET\"><input type=\"submit\" value=\"Leaderboard\"></form><form action=\"/\" method=\"POST\"><input type=\"submit\" value=\"Logout\"></form>");
+    server.send(200, "text/html", "<p>Welcome, " + user[0] + " " + user[1] + "!</p><form action=\"/history\" method=\"POST\"><input type=\"submit\" value=\"My Scores\"></form><form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Scream\"></form><form action=\"/leaderboard.html\" method=\"GET\"><input type=\"submit\" value=\"Leaderboard\"></form><form action=\"/\" method=\"POST\"><input type=\"submit\" value=\"Logout\"></form>");
   }
 }
 
-void handleLeaderboard(){
-  
+//void handleLeaderboard(){
+//
+//}
+
+void handleHistory() {
+
 }
 
-void handleHistory(){
-  
-}
-
-void handleScream(){
-  if (maxScore != 0){ // If the user came back from /screaming, then there is a maxScore for the session
+void handleScream() {
+  if (maxScore != 0) { // If the user came back from /screaming, then there is a maxScore for the session
     String maxScoreString = String(maxScore);
     server.send(200, "text/html", "<p>Scream volume: " + maxScoreString + "</p><form action=\"/post\" method=\"POST\"><input type=\"submit\" value=\"Post\"></form>");
-  } else{
+  } else {
     server.send(200, "text/html", "<p>Scream volume: </p><form action=\"/recording.html\" method=\"POST\"><input type=\"submit\" value=\"Start\"></form><form action=\"/post\" method=\"POST\"><input type=\"submit\" value=\"Post\"></form><form action=\"/login\" method=\"POST\"><input type=\"submit\" value=\"Home\"></form>");
   }
 }
 
-void handleScreaming(){
-//  server.send(200, "/recording.html");
-  server.send(200, "text/html", "<form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Stop\"></form>");
+//void handleScreaming(){
+////  server.send(200, "/recording.html");
+//  server.send(200, "text/html", "<form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Stop\"></form>");
+//}
+
+void handlePost() {
+  File postScore = SPIFFS.open("/temp.csv", "a");
+  postScore.print(user[0] + user[1] + ", " + String(maxScore) + "\n");
+  postScore.close();
+  File tempScore = SPIFFS.open("temp.csv", "a");
+  tempScore.print(user[0] + ", " + String(maxScore) + "\n");
+  tempScore.close();
+  maxScore = 0;
+  handleScream();
 }
 
-void handlePost(){
-  
-}
-
-void handleLogout(){
+void handleLogout() {
   user[0] = "";
   user[1] = "";
+  maxScore = 0;
   handleRoot();
 }
 
@@ -215,18 +231,22 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
     case WStype_CONNECTED: {              // if a new websocket connection is established
         IPAddress ip = webSocket.remoteIP(num);
         Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
-        record = false;                  // start with not recording for a new connection 
+        record = false;                  // start with not recording for a new connection
       }
       break;
     case WStype_TEXT:                     // if new text data is received
       Serial.printf("[%u] get Text: %s\n", num, payload);
       if (payload[0] == 'R') {                      // the browser sends an R when recording is enabled
         record = true;
-        stopRecord = false; 
+        stopRecord = false;
       } else if (payload[0] == 'N') {                      // the browser sends an N when recording is disabled
         record = false;
       }
       break;
   }
+}
+
+void clearLeaderboard(){
+  SPIFFS.remove("/temp.csv");
 }
 

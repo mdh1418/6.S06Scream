@@ -34,8 +34,6 @@ void setup(void) {
   Serial.println('\n');
 
   wifiMulti.addAP("MIT", "");   // add Wi-Fi networks you want to connect to
-  //  wifiMulti.addAP("ssid_from_AP_2", "your_password_for_AP_2");
-  //  wifiMulti.addAP("ssid_from_AP_3", "your_password_for_AP_3");
 
   Serial.println("Connecting ...");
   int i = 0;
@@ -56,10 +54,6 @@ void setup(void) {
   }
 
   SPIFFS.begin();
-  //  server.onNotFound([]() {
-  //    if (!handleFileRead(server.uri()))
-  //      server.send(404, "text/plain", "404: Not Found");
-  //  });
 
   // Display the home page
   server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
@@ -81,40 +75,8 @@ void loop(void) {
   server.handleClient();                     // Listen for HTTP requests from clients
 }
 
-//String getContentType(String filename) { // convert the file extension to the MIME type
-//  if (filename.endsWith(".html")) return "text/html";
-//  else if (filename.endsWith(".css")) return "text/css";
-//  else if (filename.endsWith(".js")) return "application/javascript";
-//  else if (filename.endsWith(".ico")) return "image/x-icon";
-//  else if (filename.endsWith(".gz")) return "application/x-gzip";
-//  return "text/plain";
-//}
-
-//bool handleFileRead(String path) { // send the right file to the client (if it exists)
-//  Serial.println("handleFileRead: " + path);
-//  if (path.endsWith("/")) path += "index.html";          // If a folder is requested, send the index file
-//  String contentType = getContentType(path);             // Get the MIME type
-//  String pathWithGz = path + ".gz";
-//  if (SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) { // If the file exists, either as a compressed archive, or normal
-//    if (SPIFFS.exists(pathWithGz))                         // If there's a compressed version available
-//      path += ".gz";                                         // Use the compressed version
-//    File file = SPIFFS.open(path, "r");                    // Open the file
-//    size_t sent = server.streamFile(file, contentType);    // Send it to the client
-//    file.close();                                          // Close the file again
-//    Serial.println(String("\tSent file: ") + path);
-//    return true;
-//  }
-//  Serial.println(String("\tFile Not Found: ") + path);
-//  return false;                                          // If the file doesn't exist, return false
-//}
-
 void handleRoot() {                          // When URI / is requested, send the home page
   server.send(200, "text/html", "<p>Welcome to 6.S06Scream!!!</p><form action=\"/login\" method=\"POST\">Firstname: <input type=\"text\" name=\"firstname\" placeholder=\"John\"></br>Lastname: <input type=\"text\" name=\"lastname\" placeholder=\"Doe\"></br><input type=\"submit\" value=\"Login\"></form><form action=\"/leaderboard.html\" method=\"POST\"><input type=\"submit\" value=\"Leaderboard\"></form>");
-
-//  File readLog = SPIFFS.open("/temp.csv", "r");
-//  for (int i = 0; i < 10; i++){
-//    Serial.println(readLog.readStringUntil('\n'));
-//  }
 }
 
 void handleLogin() {                         // If a POST request is made to URI /login
@@ -124,15 +86,10 @@ void handleLogin() {                         // If a POST request is made to URI
   else if ( ! server.hasArg("firstname") || ! server.hasArg("lastname")
        || server.arg("firstname") == NULL || server.arg("lastname") == NULL) {
     server.send(400, "text/plain", "400: Invalid Request, please enter your name");
-    return;
   }
   else {
     user[0] = server.arg("firstname");
     user[1] = server.arg("lastname");
-//    SPIFFS.remove("/temp.csv");
-//    File tempLog = SPIFFS.open("/temp.csv", "a");
-//    tempLog.print(server.arg("firstname") + " " + server.arg("lastname") + ".\n");
-//    tempLog.close();
 
     server.send(200, "text/html", "<p>Welcome, " + user[0] + " " + user[1] + "!</p><form action=\"/history\" method=\"POST\"><input type=\"submit\" value=\"My Scores\"></form><form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Scream\"></form><form action=\"/leaderboard\" method=\"GET\"><input type=\"submit\" value=\"Leaderboard\"></form><form action=\"/\" method=\"POST\"><input type=\"submit\" value=\"Logout\"></form>");
   }
@@ -178,3 +135,15 @@ void handleLogout(){
 void handleNotFound() {
   server.send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
 }
+
+// How to open/read file
+//  File readLog = SPIFFS.open("/temp.csv", "r");
+//  for (int i = 0; i < 10; i++){
+//    Serial.println(readLog.readStringUntil('\n'));
+//  }
+
+// How to remove file/wrtie new file
+//    SPIFFS.remove("/temp.csv");
+//    File tempLog = SPIFFS.open("/temp.csv", "a");
+//    tempLog.print(server.arg("firstname") + " " + server.arg("lastname") + ".\n");
+//    tempLog.close();

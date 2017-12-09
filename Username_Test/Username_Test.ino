@@ -14,6 +14,7 @@ bool handleFileRead(String path);
 
 String user[2];
 int maxScore;
+bool screaming;
 
 void handleRoot();              // function prototypes for HTTP handlers
 void handleLogin();
@@ -147,6 +148,7 @@ void handleHistory(){
 
 void handleScream(){
   if (maxScore != 0){ // If the user came back from /screaming, then there is a maxScore for the session
+    screaming = false;
     String maxScoreString = String(maxScore);
     server.send(200, "text/html", "<p>Scream volume: " + maxScoreString + "</p><form action=\"/post\" method=\"POST\"><input type=\"submit\" value=\"Post\"></form>");
   } else{
@@ -155,7 +157,12 @@ void handleScream(){
 }
 
 void handleScreaming(){
+  screaming = true;
   server.send(200, "text/html", "<form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Stop\"></form>");
+  while(screaming){
+    Serial.println("Hello");
+    maxScore += 1;
+  }
 }
 
 void handlePost(){

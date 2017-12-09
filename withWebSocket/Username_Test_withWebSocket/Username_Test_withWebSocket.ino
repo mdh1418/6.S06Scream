@@ -124,7 +124,7 @@ String getContentType(String filename) { // convert the file extension to the MI
 bool handleFileRead(){//String path) { // send the right file to the client (if it exists)
 //  Serial.println("handleFileRead: " + path);
 //  if (path.endsWith("/")) path += "recording.html";          // If a folder is requested, send the index file
-  String path = "recording.html";
+  String path = "/recording.html";
   String contentType = getContentType(path);             // Get the MIME type
   String pathWithGz = path + ".gz";
   if (SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) { // If the file exists, either as a compressed archive, or normal

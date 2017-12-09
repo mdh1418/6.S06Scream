@@ -88,7 +88,7 @@ void setup(void) {
   server.on("/post", HTTP_POST, handlePost);
   server.on("/", HTTP_POST, handleLogout);
   server.onNotFound([]() {
-//    if (!handleFileRead(server.uri()))
+    if (!handleFileRead(server.uri()))
       server.send(404, "text/plain", "404: Not Found");
   });
 //  server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
@@ -121,10 +121,9 @@ String getContentType(String filename) { // convert the file extension to the MI
   return "text/plain";
 }
 
-bool handleFileRead(){//String path) { // send the right file to the client (if it exists)
-//  Serial.println("handleFileRead: " + path);
-//  if (path.endsWith("/")) path += "recording.html";          // If a folder is requested, send the index file
-  String path = "/recording.html";
+bool handleFileRead(String path) { // send the right file to the client (if it exists)
+  Serial.println("handleFileRead: " + path);
+  if (path.endsWith("/")) path += "recording.html";          // If a folder is requested, send the index file
   String contentType = getContentType(path);             // Get the MIME type
   String pathWithGz = path + ".gz";
   if (SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) { // If the file exists, either as a compressed archive, or normal
@@ -185,14 +184,13 @@ void handleScream(){
     String maxScoreString = String(maxScore);
     server.send(200, "text/html", "<p>Scream volume: " + maxScoreString + "</p><form action=\"/post\" method=\"POST\"><input type=\"submit\" value=\"Post\"></form>");
   } else{
-    server.send(200, "text/html", "<p>Scream volume: </p><form action=\"/screaming\" method=\"POST\"><input type=\"submit\" value=\"Start\"></form><form action=\"/post\" method=\"POST\"><input type=\"submit\" value=\"Post\"></form><form action=\"/login\" method=\"POST\"><input type=\"submit\" value=\"Home\"></form>");
+    server.send(200, "text/html", "<p>Scream volume: </p><form action=\"/recording.html\" method=\"POST\"><input type=\"submit\" value=\"Start\"></form><form action=\"/post\" method=\"POST\"><input type=\"submit\" value=\"Post\"></form><form action=\"/login\" method=\"POST\"><input type=\"submit\" value=\"Home\"></form>");
   }
 }
 
 void handleScreaming(){
-  handleFileRead();
-//  server.send(200, "recording.html");
-//  server.send(200, "text/html", "<form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Stop\"></form>");
+//  server.send(200, "/recording.html");
+  server.send(200, "text/html", "<form action=\"/scream\" method=\"POST\"><input type=\"submit\" value=\"Stop\"></form>");
 }
 
 void handlePost(){

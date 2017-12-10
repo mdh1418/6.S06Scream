@@ -1,3 +1,8 @@
+//#include <WiFi.h>
+//#include <WiFiUdp.h>
+//#include <WiFiClient.h>
+//#include <WiFiServer.h>
+
 #include <WebSocketsServer.h>
 #include <WebSocketsClient.h>
 #include <WebSockets.h>
@@ -30,6 +35,7 @@ void handlePost();
 void handleLogout();
 void handleNotFound();
 
+//IPAddress ip(18, 111, 22, 191); 
 void setup(void) {
   user[0] = "";
   user[1] = "";
@@ -58,6 +64,7 @@ void setup(void) {
   } else {
     Serial.println("Error setting up MDNS responder!");
   }
+//  WiFi.config(ip);
 
 
   // ---------- START SPIFF ----------- //

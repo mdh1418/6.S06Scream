@@ -23,15 +23,7 @@ Structure:
                 drawChart
 */
 
-/*
-               |                    CHART                    |
-               |                  VIEW PORT                  |
-invisible      |                   visible                   |      invisible
----------------|---------------------------------------------|--------------->  time
-       viewportStartTime                              viewportEndTime
-               |______________viewportWidthTime______________|
-viewportWidthTime = 1 day * 2^zoomLevel = viewportEndTime - viewportStartTime
-*/
+
 
 function loadCSV() {
     var xmlhttp = new XMLHttpRequest();
@@ -45,7 +37,7 @@ function loadCSV() {
     xmlhttp.open("GET", "temp.csv", true);
     xmlhttp.send();
     var loadingdiv = document.getElementById("loading");
-    loadingdiv.style.visibility = "visible";
+    loadingdiv.style.visibility = "hidden";
 }
 
 function parseCSV(string) {
@@ -61,14 +53,13 @@ function parseCSV(string) {
 
 function drawChart() {
     var data = new google.visualization.DataTable();
-    data.addColumn('sting', 'Name');
+    data.addColumn('string', 'Name');
     data.addColumn('number', 'loudness');
-
     data.addRows(dataArray);
 
     var table = new google.visualization.Table(document.getElementById('table_div'));
 
-    table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+    table.draw(data, {showRowNumber: true, width: '100%', height: 360});
 
     var dateselectdiv = document.getElementById("dateselect");
     dateselectdiv.style.visibility = "visible";

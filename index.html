@@ -14,8 +14,17 @@ body, html {height: 100%}
     background-position: center;
     background-size: cover;
 }
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+iframe{
+    max-width: 100%;
+    max-height: 100%;
+}
 </style>
 <body>
+
 
 <div class="bgimg w3-display-container w3-text-white">
   <div class="w3-display-middle w3-jumbo">
@@ -26,8 +35,11 @@ body, html {height: 100%}
     <p><button onclick="document.getElementById('video').style.display='block'" class="w3-button w3-black">video</button></p>
     <p><button onclick="document.getElementById('fabrication').style.display='block'" class="w3-button w3-black">fabrication</button></p>
     <p><button onclick="document.getElementById('code').style.display='block'" class="w3-button w3-black">electronics & code</button></p>
-    <p><button onclick="document.getElementById('presentation').style.display='block'" class="w3-button w3-black">presentation graphics</button></p>
+    <hr></hr>
     <p><button onclick="document.getElementById('brainstorm').style.display='block'" class="w3-button w3-black">brainstorming</button></p>
+    <p><button onclick="document.getElementById('midterm presentation').style.display='block'" class="w3-button w3-black">midterm presentation</button></p>
+    <p><button onclick="document.getElementById('final presentation').style.display='block'" class="w3-button w3-black">final presentation</button></p>
+    <p><button onclick="document.getElementById('timeline').style.display='block'" class="w3-button w3-black">timeline</button></p>
   </div>
   <div class="w3-display-bottomleft w3-container">
     <p class="w3-xlarge">Mitchell Hwang, Xin Wen</p>
@@ -58,7 +70,7 @@ body, html {height: 100%}
       <h1></h1>
     </div>
     <div class="w3-container">
-      <h5> </h5>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/sLPwxSSccD0" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
     </div>
   </div>
 </div>
@@ -81,19 +93,6 @@ body, html {height: 100%}
   <div class="w3-modal-content w3-animate-zoom">
     <div class="w3-container w3-black w3-display-container">
       <span onclick="document.getElementById('code').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
-      <h1></h1>
-    </div>
-    <div class="w3-container">
-      <h5> </h5>
-    </div>
-  </div>
-</div>
-    
-<!-- Presentation Modal -->
-<div id="presentation" class="w3-modal">
-  <div class="w3-modal-content w3-animate-zoom">
-    <div class="w3-container w3-black w3-display-container">
-      <span onclick="document.getElementById('presentation').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
       <h1></h1>
     </div>
     <div class="w3-container">
@@ -131,6 +130,54 @@ body, html {height: 100%}
     </div>
   </div>
 </div>
-    
+
+<!-- Midterm Presentation Model -->
+<div id="midterm presentation" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom">
+    <div class="w3-container w3-black w3-display-container">
+      <span onclick="document.getElementById('midterm presentation').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
+      <h1>Midterm Presentation</h1>
+      <h1></h1>
+    </div>
+    <div class="w3-container">
+      <h5>On November 10th, we had our <a href="https://docs.google.com/presentation/d/1-k8N9qbHMW9w62l_ReCmDMHjLwYWRnBc535I6K1pn70/edit?usp=sharing">midterm project presentation</a> in class. </h5>
+      <h4>Progress</h4>
+        <h5>By this time, we had a setup in which a microphone was interfaced with an Arduino UNO. For the canister, we brainstormed different ways to muffle any screams into it as well as ways to fabricate the canister itself. At the time, the options we were leaning towards included using acoustic foam or latex to line the inside of the container in hopes that they would help dampen the soundwaves. Our next steps were to make the canister more reliably sound proof as well as creating our end-to-end webapp system.</h5>
+    </div>
+  </div>
+</div>
+
+<!-- Final Presentation Model -->
+<div id="final presentation" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom">
+    <div class="w3-container w3-black w3-display-container">
+      <span onclick="document.getElementById('final presentation').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
+      <h1>Final Presentation</h1>
+      <h1></h1>
+    </div>
+    <div class="w3-container">
+      <h5>On December 13th, we had our <a href="https://docs.google.com/presentation/d/1pLhbxeTExfX49koQ1J89Tz1TkN3xzvitczZTVAUMj18/edit?usp=sharing">final project presentation</a> in class. </h5>
+      <h4>Progress</h4>
+        <h5>Since the midterm presentation on November 10th, we have made several design choices. Soundproofing the canister turned out to be a significantly more difficult task than we had originally anticipated. We ended up silicone casting the canister and placed our acoustic foam inside. We then shifted our focus to build the entire end-to-end system. In using the ESP8266 and NodeMCU, we ran into some difficulties trying to interface with MIT App Inventor. Eventually, we came across this comprehensive <a href="https://tttapa.github.io/ESP8266/Chap01%20-%20ESP8266.html">guide</a> that helped us build our website by using the ESP8266 as a server. After properly routing pages, we then interfaced the microphone to read values with the toggle of a button. Finally, we created a leaderboard by which users could view overall highscores, and lined the canister with led lights that lit up according to users' screams.</h5>
+    </div>
+  </div>
+</div>
+
+<!-- Timeline Modal -->
+<div id="timeline" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom">
+    <div class="w3-container w3-black w3-display-container">
+      <span onclick="document.getElementById('timeline').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
+      <h1></h1>
+    </div>
+    <div class="w3-container">
+      <h5> </h5>
+
+      <img class="full" src="images/website/timeline.png"/>
+    </div>
+  </div>
+</div>
+
+
 </body>
 </html>

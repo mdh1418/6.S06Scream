@@ -45,7 +45,7 @@ void setup(void) {
   Serial.println('\n');
 
   // ------- START WIFI ---------- //
-  wifiMulti.addAP("MIT", "");   // add Wi-Fi networks you want to connect to
+  wifiMulti.addAP("StataCenter", "");   // add Wi-Fi networks you want to connect to
 
   Serial.println("Connecting ...");
   int i = 0;

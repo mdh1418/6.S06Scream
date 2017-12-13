@@ -85,7 +85,7 @@ iframe{
     <div class="w3-container">
       <h5> Our goal was to make the canister soundproof so that one can scream without reservation. However, soundproofing the canister turned out much harder than we thought. For the first prototype, we fabricated the case out of kerfed cardboard stuffed with porous foam. The soundproofing effect was suboptimal. We then tried using a vacuum for the body so sound cannot travel out. We got a thermal for testing; however, we found that because the thermal was rigid so it was impossible to introduce more air into it once you cover the opening with your mouth. It was quite painful trying to scream into it.</h5>
         
-      <h5>Eventually, we looked back at the design of <a href="https://www.youtube.com/watch?v=Ta7rN5TeKzw" target="_blank">Kelly Dodson's Scream Body</a>, one of our inspirations. She wrapped polyurethane in latex to achieve sound proofing. We decided to use silicone to enclose the foam because it was more accessible than latex for us and easier to fabricate.</h5>
+      <h5>Eventually, we looked back at the design of <a href="https://www.youtube.com/watch?v=Ta7rN5TeKzw" target="_blank">Kelly Dobson's Scream Body</a>, one of our inspirations. She wrapped polyurethane in latex to achieve sound proofing. We decided to use silicone to enclose the foam because it was more accessible than latex for us and easier to fabricate.</h5>
         
       <h5>Basically, we wanted to make a large container out of silicone. There are couple ways to cast a large object with a thickness in silicone. You can make a 3D negative model with </h5>
         
@@ -100,10 +100,19 @@ iframe{
   <div class="w3-modal-content w3-animate-zoom">
     <div class="w3-container w3-black w3-display-container">
       <span onclick="document.getElementById('code').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
-      <h1></h1>
+      <h1>Electronics and Code</h1>
     </div>
     <div class="w3-container">
-      <h5> </h5>
+      <h5>In order to measure screams, we decided to use a standard electret microphone. Interfacing with the NodeMCU was fairly simple and is shown below.</h5>
+      <img class="full" src="images/website/ElectretMic.png" style="width:600px;"/>
+      <h5>We had some difficulty accessing the ESP8266 as a server, but by following this <a href="https://github.com/tttapa/ESP8266">guide</a>, we were able to resolve many issues.</h5>
+      <h5>Using <a href="https://tttapa.github.io/ESP8266/Chap10%20-%20Simple%20Web%20Server.html">Simple Web Server</a>, we were able to route our webpages with POST and GET as follows.</h5>
+      <img class="full" src="images/website/Routing.png" style="width:600px;"/>
+      <h5>Using <a href="https://tttapa.github.io/ESP8266/Chap11%20-%20SPIFFS.html">SPIFFS</a>, we were able to read and write files onto the ESP8266 as well as read in data without refreshing the page.</h5>
+      <h5>Using <a href="https://tttapa.github.io/ESP8266/Chap16%20-%20Data%20Logging.html">Data Logging</a>, we learned to display our data on the leaderboard.</h5>
+      <h5>To finish it off, we added an LED light strip interfaced with an Arduino UNO due to some issues inherent in using the ESP8266 with the strip.</h5>
+      <img class="full" src="images/website/ledStrip.png" style="width:600px;"/>
+      <h5>All of our code and arduino files as well as html files for this website can be found <a href="https://github.com/mdh1418/6.S06Scream">here</a> on github</h5>
     </div>
   </div>
 </div>
@@ -138,7 +147,7 @@ iframe{
   </div>
 </div>
 
-<!-- Midterm Presentation Model -->
+<!-- Midterm Presentation Modal -->
 <div id="midterm presentation" class="w3-modal">
   <div class="w3-modal-content w3-animate-zoom">
     <div class="w3-container w3-black w3-display-container">
@@ -154,7 +163,7 @@ iframe{
   </div>
 </div>
 
-<!-- Final Presentation Model -->
+<!-- Final Presentation Modal -->
 <div id="final presentation" class="w3-modal">
   <div class="w3-modal-content w3-animate-zoom">
     <div class="w3-container w3-black w3-display-container">

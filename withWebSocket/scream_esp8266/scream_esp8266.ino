@@ -1,8 +1,3 @@
-//#include <WiFi.h>
-//#include <WiFiUdp.h>
-//#include <WiFiClient.h>
-//#include <WiFiServer.h>
-
 #include <WebSocketsServer.h>
 #include <WebSocketsClient.h>
 #include <WebSockets.h>
@@ -45,7 +40,7 @@ void setup(void) {
   Serial.println('\n');
 
   // ------- START WIFI ---------- //
-  wifiMulti.addAP("StataCenter", "");   // add Wi-Fi networks you want to connect to
+  wifiMulti.addAP("MIT", "");   // add Wi-Fi networks you want to connect to
 
   Serial.println("Connecting ...");
   int i = 0;
